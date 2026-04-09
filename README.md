@@ -100,7 +100,7 @@ df['Hazard_Score'] = df['Traffic_Signal'].astype(int) + \
 
 ### 1. Accident Frequency Heatmap — Hour × Day of Week
 
-![Accident Frequency Heatmap](3.png)
+![Accident Frequency Heatmap](1.png)
 
 The temporal fingerprint of accidents is unmistakable. Weekday mornings (6–9 AM) and evenings (3–6 PM) are the highest-risk windows — a direct reflection of commuter activity. The bright yellow cells at **Tuesday–Thursday, 7–8 AM** represent the absolute peak: over 100,000 accidents recorded at that slot across the dataset's span. Critically, the **risk is not weather-driven** at this scale; it is **human-schedule-driven**. Weekends (Saturday–Sunday) show a dramatically flatter, lower-intensity distribution consistent with leisure travel patterns.
 
@@ -123,7 +123,7 @@ The Eastern density is not just a volume problem — it represents a systemic in
 
 ### 3. Weather Impact Analysis — Severity Breakdown
 
-![Weather Impact Analysis](1.png)
+![Weather Impact Analysis](3.png)
 
 One of the most counter-intuitive findings in the dataset: **88% of accidents occur in Clear (45%) or Cloudy (43%) conditions.** Rain accounts for just 8%, while Snow and Fog together contribute only ~5%.
 
