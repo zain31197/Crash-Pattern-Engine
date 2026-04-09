@@ -28,7 +28,7 @@ Road accident analysis has historically been reactive — emergency responders a
 
 Despite this, most public safety dashboards treat accidents as isolated data points. This project builds a **multi-dimensional risk intelligence system** — transforming 7.7 million raw accident records into actionable, spatiotemporal risk patterns that can inform proactive intervention.
 
-**The question this project answers:**  
+**The question this project answers:**
 > *"Given time, location, weather, and infrastructure conditions — what is the risk profile of any given road segment in the US?"*
 
 ---
@@ -83,6 +83,7 @@ df['Hazard_Score'] = df['Traffic_Signal'].astype(int) + \
 ```
 
 **Analytical Techniques Used:**
+
 | Technique | Purpose |
 |-----------|---------|
 | KDE Heatmaps | Geospatial severity density |
@@ -99,53 +100,55 @@ df['Hazard_Score'] = df['Traffic_Signal'].astype(int) + \
 
 ### 1. Accident Frequency Heatmap — Hour × Day of Week
 
-![Accident Frequency Heatmap](12.png)
+![Accident Frequency Heatmap](3.png)
 
-The temporal fingerprint of accidents is unmistakable. Weekday mornings (6–9 AM) and evenings (3–6 PM) are the highest-risk windows — a direct reflection of commuter activity. Critically, the **risk is not weather-driven** at this scale; it is **human-schedule-driven**. Weekends show a flatter, mid-day distribution consistent with leisure travel.
+The temporal fingerprint of accidents is unmistakable. Weekday mornings (6–9 AM) and evenings (3–6 PM) are the highest-risk windows — a direct reflection of commuter activity. The bright yellow cells at **Tuesday–Thursday, 7–8 AM** represent the absolute peak: over 100,000 accidents recorded at that slot across the dataset's span. Critically, the **risk is not weather-driven** at this scale; it is **human-schedule-driven**. Weekends (Saturday–Sunday) show a dramatically flatter, lower-intensity distribution consistent with leisure travel patterns.
 
-**Intervention implication:** Dynamic speed limit enforcement and alert systems should activate specifically during the 7–9 AM and 4–6 PM weekday windows.
+**Intervention implication:** Dynamic speed limit enforcement and real-time alert systems should activate specifically during the 7–9 AM and 4–6 PM weekday windows.
 
 ---
 
 ### 2. USA Accident Severity Zones — High-Risk Cluster Analysis
 
-![USA Accident Severity Zones](11.png)
+![USA Accident Severity Zones](2.png)
 
-A severity-weighted heatmap across the continental US reveals three structural zones:
-- **Eastern Seaboard:** Near-continuous high-severity corridor (population density-driven)
-- **West Coast Corridors:** Major north-south intensity along I-5, I-101
-- **Central Void:** Mountain West and Great Plains show dramatically lower density
+A severity-weighted KDE heatmap across the continental US reveals three structural risk zones:
+- **Eastern Seaboard:** Near-continuous deep red corridor from Boston to Miami — the densest and most severe zone, driven by population concentration and interstate corridor overload
+- **West Coast Corridors:** High-intensity clusters along California's I-5 and I-101, with Sacramento and Los Angeles forming distinct hotspots
+- **Central Void:** Mountain West and Great Plains show dramatically lower severity density, consistent with lower population and traffic volume
 
-The Eastern density is not just a volume problem — it represents a systemic infrastructure challenge where congestion compounds severity.
+The Eastern density is not just a volume problem — it represents a systemic infrastructure challenge where congestion compounds severity at every incident.
 
 ---
 
 ### 3. Weather Impact Analysis — Severity Breakdown
 
-![Weather Impact Analysis](10.png)
+![Weather Impact Analysis](1.png)
 
-One of the most counter-intuitive findings in the dataset: **88% of accidents occur in Clear (45%) or Cloudy (43%) conditions.** Rain accounts for just 8%, while Snow and Fog together contribute ~5%.
+One of the most counter-intuitive findings in the dataset: **88% of accidents occur in Clear (45%) or Cloudy (43%) conditions.** Rain accounts for just 8%, while Snow and Fog together contribute only ~5%.
 
-This does not mean weather is irrelevant — it means **driver behavioral overconfidence in good conditions** is a larger systemic risk than adverse weather itself. Severity 2 (moderate) dominates across all weather types (74–80%).
+The inner ring shows weather type distribution; the outer ring breaks each weather segment into severity sub-slices. Severity 2 (moderate) dominates uniformly across all weather types — ranging from 74% in Rain to 82% in Fog. The takeaway is not that weather is irrelevant, but that **driver behavioral overconfidence in good conditions** poses a larger systemic risk than adverse weather itself.
 
 ---
 
 ### 4. Multi-Dimensional Risk Flow — Conditions → Severity
 
-![Multi-Dimensional Risk Flow](7.png)
+![Multi-Dimensional Risk Flow](4.png)
 
-This Sankey diagram traces the path from **Lighting → Weather → Signal Presence → Impact Severity**. Key structural flow:
-- The widest bands originate from "Day" + "Clear/Cloudy" → confirming the volume finding above
-- A significant flow passes through **Signal: False** — indicating highways (without signals) generate more accidents than intersections
-- "Night" time conditions disproportionately route toward Severity 3+ outcomes
+This Sankey (alluvial) diagram traces the complete causal pathway: **Lighting → Weather → Signal Presence → Impact Severity**. Flow width is proportional to accident volume; color encodes severity level from Minor (dark purple) through Fatal (yellow).
+
+Key structural patterns:
+- The widest bands originate from **"Day" + "Clear/Cloudy"** — confirming the volume finding above
+- A dominant flow routes through **Signal Present: False**, indicating highways without signals generate more accidents than controlled intersections
+- **"Night" lighting** disproportionately feeds into Severity 3 (Severe) and Severity 4 (Fatal) outcomes — thin bands but high consequence
 
 ---
 
 ### 5. Correlation Matrix — Environmental Factors vs. Severity
 
-![Correlation Matrix](8.png)
+![Correlation Matrix](5.png)
 
-The correlation matrix reveals a critical analytical truth: **environmental variables are near-independent predictors of severity.** The strongest correlation with severity is `Traffic_Signal` at just -0.12 — and it's *negative*, meaning signal-equipped intersections correlate with *lower* severity accidents.
+The heatmap reveals a critical analytical truth: **individual environmental variables are near-independent predictors of severity.** All correlations with Severity hover near zero — no single weather or time variable can predict accident outcome on its own.
 
 | Variable | Correlation with Severity |
 |----------|--------------------------|
@@ -155,107 +158,118 @@ The correlation matrix reveals a critical analytical truth: **environmental vari
 | Hour | +0.02 |
 | Traffic Signal | **-0.12** |
 
-This independence justifies the need for **multivariate interaction modeling** rather than simple regression.
+The strongest signal is `Traffic_Signal` at -0.12 — *negative* — meaning signal-equipped locations correlate with **lower** severity accidents. The moderate Temperature–Visibility correlation (0.21) reflects natural co-variation (warmer and clearer during daytime) rather than a causal accident driver. This matrix justifies the need for **multivariate interaction modeling** over simple regression.
 
 ---
 
 ### 6. Top 15 States and High-Risk Cities
 
-![Top 15 States](9.png)
+![Top 15 States](6.png)
 
-Texas, Florida, and California form the "Big Three" — not only in state-level volume but in urban concentration. Houston, Miami, and Los Angeles each carry accident loads exceeding any comparable metro elsewhere. Notably:
-- **TX and FL** concentrate risk in 2–3 cities each
-- **MI and PA** have high totals but distributed across more cities
-- **NC** shows a sharp Charlotte-dominant pattern with Raleigh as secondary
+This treemap encodes state-level volume (block size) and city-level accident count (nested blocks with color intensity). Texas, Florida, and California form the undisputed "Big Three" — with Houston, Miami, and Los Angeles each exceeding 150k accidents (deep red).
+
+Notable patterns:
+- **TX and FL** concentrate risk in 2–3 cities; remaining cities are dramatically smaller
+- **NC** shows a sharp Charlotte-dominant profile — one city carrying the state
+- **NY** distributes across Bronx, Brooklyn, and Buffalo rather than concentrating in a single metro
+- **MI and PA** have respectable state totals but no single city reaching the extreme red threshold
 
 ---
 
 ### 7. Hourly Environmental Trends vs. Accident Frequency
 
-![Hourly Environmental Trends](6.png)
+![Hourly Environmental Trends](12.png)
 
-Plotting Avg_Temp, Avg_Visibility, and Accident_Count on the same log-scale timeline across days of the week produces a decisive result: **temperature and visibility remain nearly flat across all 24 hours, while accident frequency shows dramatic rush-hour spikes.**
+Three metrics plotted on a shared log-scale y-axis across 24 hours, animated by day of week (shown here for Monday). The result is decisive: **Avg_Temperature (blue) and Avg_Visibility (pink) remain essentially flat across all hours**, while **Accident_Count (green) shows dramatic rush-hour spikes** peaking around 8–10 AM and again at 15–17h.
 
-This decouples the environmental narrative from the behavioral one — accidents cluster at times of *human activity concentration*, not environmental degradation.
+This chart definitively decouples the environmental narrative from the behavioral one — daily accident cycles are driven by human activity concentration, not hourly weather fluctuations. The log scale makes the flatness of the environmental lines even more striking against the accident curve's volatility.
 
 ---
 
 ### 8. Dynamic Environmental Risk — Hourly Weather & Severity
 
-![Dynamic Environmental Risk](5.png)
+![Dynamic Environmental Risk](11.png)
 
-The animated bubble chart (shown here at Hour=0) plots **Average Temperature (x-axis) × Accident Volume (y-axis, log scale) × Visibility (bubble size) × Severity (color)**. 
+An animated 4-dimensional bubble chart (shown here at Hour=0) encoding: **Average Temperature (x-axis) × Accident Volume (y-axis, log scale) × Visibility (bubble size) × Avg Severity (color)**.
 
-Key observation: The largest bubbles (highest visibility) consistently sit at the *top* of the chart — confirming that **clear visibility = high volume**, not low risk. Severity peaks cluster around 55°F, suggesting speed-confidence conditions.
+At midnight (Hour=0), weather groups cluster around 50–55°F. The large teal bubble at ~55°F represents Clear/Cloudy conditions — highest volume even at night, moderate severity. The small dark purple bubble at ~50°F represents adverse conditions — lower volume but elevated severity. As the animation progresses through daytime hours, bubbles grow (visibility improves) and volume surges, confirming the commuter-driven pattern seen in the heatmap.
 
 ---
 
 ### 9. Critical Segment Identification — K-Means Clustering (K=15 Hotspots)
 
-![K-Means Clustering](4.png)
+![K-Means Clustering](10.png)
 
-K-Means with K=15 identifies national hotspot clusters differentiated by both **volume** and **average severity**. The dark red (severity ~2.35+) cluster in the Midwest represents a particularly dangerous profile: relatively lower accident volume but disproportionately high severity. This matches the rural/high-speed hypothesis — fewer accidents, but more fatal ones.
+K-Means with K=15 partitions the national accident geography into 15 representative clusters, each bubble sized by accident volume and colored by average severity. This reveals the critical distinction between **high-frequency** and **high-severity** zones:
 
-West Coast clusters show the inverse: extremely high volume at lower average severity, consistent with slow urban-crawl traffic.
+- **Dark red cluster (Midwest / Great Lakes region):** Severity ~2.35+ — most dangerous cluster per incident, consistent with high-speed interstate driving and variable winter conditions
+- **Large pale-yellow cluster (Southern California):** Enormous volume but lower average severity — frequent but low-consequence urban-crawl collisions
+- **Mid-Atlantic orange clusters:** Moderate volume with elevated severity — a priority zone combining frequency with consequence
 
 ---
 
 ### 10. Hierarchical Clustering — State Similarity by Accident Profile
 
-![Hierarchical Clustering](3.png)
+![Hierarchical Clustering](9.png)
 
-Ward-linkage hierarchical clustering groups US states by their accident profile similarity (not just count). The red dashed line at dissimilarity ~3.5 produces meaningful clusters:
+Ward-linkage hierarchical clustering groups all 49 US states by their multidimensional accident profile similarity. The red dashed threshold line at dissimilarity ~3.5 produces 7 meaningful policy clusters:
 
-- 🟠 **ID, OR, ME, WV, MN:** Rural/Northern cluster — winter weather, low density
-- 🔴 **TX, LA, TN, FL, AZ, SC, CA:** Sun Belt — warm weather, high-volume urban corridors
-- 🟣 **IL, IN, NH, MI, OH, KY:** Midwest industrial corridor
-- 🟤 **IA, WI, WY, VT:** Sparse rural cluster
+- 🟠 **ID, OR, ME, WV, MN:** Rural/Northern — winter weather, sparse infrastructure, low density
+- 🔴 **TX, LA, TN, FL, AZ, SC, CA:** Sun Belt — warm climate, high-volume urban corridors
+- 🟣 **KS, MI, NH, IN, IL, OH, MD, KY:** Midwest/Mid-Atlantic industrial corridor
+- 🟤 **IA, WI, WY, VT:** Sparse rural cluster with distinctive low-volume profiles
+- 🩷 **UT, PA, AR, NJ, NY, DC, NE, NV, DE, MA:** Northeast/Mountain mixed urban
+- ⚫ **WA, VA, MS, NM:** Southern/Western transitional states
+- 🩶 **GA, RI, CT, SD, CO:** Diverse outlier group requiring broader classification criteria
 
-This enables **policy grouping** — states within the same cluster can share intervention strategies.
+This enables **policy grouping** — states within a cluster can share intervention frameworks rather than developing independent strategies from scratch.
 
 ---
 
 ### 11. Temporal Ridgeline Analysis — Accident Hour Distribution by Weather
 
-![Temporal Ridgeline Analysis](2.png)
+![Temporal Ridgeline Analysis](8.png)
 
-Ridgeline (joy) plots overlay accident hour distributions for each weather type. The key divergences:
-- **Clear & Cloudy:** Classic bimodal distribution — two sharp commuter peaks at 7–8 AM and 4–5 PM
-- **Fog:** Pronounced early-morning density (6–9 AM) when fog formation is highest
-- **Snow:** A **flattened, wide curve** — accidents distributed throughout the day, reflecting the sustained difficulty of snow driving vs. the punctual risk of commuter conditions
+Ridgeline (joy) plots stack KDE distributions for each weather type, enabling direct visual comparison of accident timing across conditions. The divergences are sharp and policy-relevant:
+
+- **Clear & Cloudy (teal):** Classic bimodal distribution — two sharp peaks at 7–8 AM and 4–5 PM, perfectly aligned with commute windows
+- **Rain (gray):** Similar bimodal shape but slightly suppressed — drivers reduce speed and frequency in rain
+- **Fog (pink-gray):** Pronounced early-morning density shift — peak moves to 6–8 AM when fog forms, a distinct leading-edge risk window
+- **Snow (red):** Dramatically **flattened, wider curve** — accidents distribute across the full day, reflecting the sustained difficulty of snow driving rather than commute-concentrated risk
 
 ---
 
 ### 12. Topographic Risk Map — 2D Contours of Accident Severity
 
-![Topographic Risk Map](1.png)
+![Topographic Risk Map](7.png)
 
-The contour map plots **Temperature (x) × Visibility (y) → Avg. Severity (z, color)**. The non-linear, island-like contours disprove any simple linear relationship. Most strikingly:
+The most analytically sophisticated visualization in the suite. A 2D contour map plots **Temperature °F (x-axis) × Visibility in miles (y-axis) → Average Severity (color/z-axis)**. The non-linear, island-like contour shapes definitively disprove any simple linear relationship between environmental variables and severity.
 
-- **High visibility (>8 mi) + High temperature (>80°F):** Severity *increases* — the "speed overconfidence" zone
-- **Low visibility + moderate temperature:** Severity remains moderate — drivers compensate behaviorally
-- **Lower-right zones (high temp, low visibility):** Complex multi-factor interactions
+Critical observations:
+- **High visibility (>8 mi) + High temperature (>80°F) → Severity increases (2.5–2.9):** The "speed overconfidence" zone — clear, warm conditions encourage higher speeds, amplifying crash consequences
+- **Low visibility (1–2 mi) + moderate temperature (20–40°F) → Severity 2.3–2.6:** Drivers measurably compensate behaviorally in poor conditions, partially offsetting the environmental hazard
+- **Bottom-right corner (high temp, low visibility) → Severity spikes >2.9:** Heat haze, sun glare, and overconfidence create localized severity peaks
 
-This is the most data-sophisticated visualization in the suite — a genuine decision surface for risk modeling.
+This surface is the foundation for a future risk-scoring model — any temperature/visibility combination can be mapped to an expected severity level.
 
 ---
 
 ## 🔑 Key Findings
 
 ### Finding 1 — The Infrastructure Paradox
-> Complex intersections (signals, crossings, junctions) **increase** accident *frequency* but **decrease** accident *severity*. Open highway segments with no signals are statistically **deadlier** per accident.
+> Complex intersections (signals, crossings, junctions) **increase** accident *frequency* but **decrease** accident *severity*. Open highway segments with no signals are statistically **deadlier** per accident. Signals enforce speed reduction and create predictable conflict zones.
 
 ### Finding 2 — Visibility vs. Volume (Counter-Intuitive)
-> Poor visibility is a **stronger predictor of fatal severity**, but the *majority* of accidents occur in clear conditions due to driver overconfidence and behavioral risk compensation.
+> The *majority* of accidents (88%) occur in clear or cloudy conditions. Poor visibility is a stronger predictor of *fatal severity*, but good visibility enables the overconfidence and speed that generate the highest raw accident counts.
 
 ### Finding 3 — Human Schedule Dominates Environmental Signal
-> Rush-hour commute timing explains more variance in accident frequency than any combination of weather variables. The daily accident curve mirrors human work schedules, not weather cycles.
+> Rush-hour commute timing explains more variance in accident frequency than any combination of weather variables. The daily accident curve mirrors human work schedules with a fidelity that environmental variables simply cannot match.
 
 ### Finding 4 — Midwest Severity Gap
-> The Midwest hosts a unique risk profile: lower accident volume than coastal metros but significantly higher average severity — consistent with rural high-speed road infrastructure and limited emergency response capacity.
+> The Midwest hosts a unique risk profile: lower accident volume than coastal metros but significantly higher average severity per incident — consistent with rural high-speed road infrastructure, longer emergency response times, and variable winter conditions.
 
 ### Finding 5 — Regional Intervention Differentiation
-> States cluster into meaningful policy groups. Northeast interventions should target **congestion management**; Midwest strategies should prioritize **speed controls and weather early warning systems**; Sun Belt policies should focus on **urban corridor design**.
+> Hierarchical clustering reveals states group into meaningful policy clusters. Northeast interventions should target **congestion management**; Midwest strategies should prioritize **speed controls and weather early-warning systems**; Sun Belt policies should focus on **urban corridor design and lane discipline**.
 
 ---
 
@@ -265,9 +279,9 @@ This is the most data-sophisticated visualization in the suite — a genuine dec
 TrafficRisk-USA/
 │
 ├── 📓 notebooks/
-│   └── Traffic-Risk-USA-Pattern.ipynb.ipynb      # Full analysis pipeline
+│   └── Traffic-Risk-USA-Pattern.ipynb      # Full analysis pipeline
 │
-├── 📊 visualizations/                     # All 12 exported chart images
+├── 📊 visualizations/                      # All 12 exported chart images
 │   ├── 01_heatmap_hour_vs_day.png
 │   ├── 02_severity_zones_usa.png
 │   ├── 03_weather_severity_breakdown.png
@@ -282,7 +296,7 @@ TrafficRisk-USA/
 │   └── 12_topographic_risk_map.png
 │
 ├── 📄 paper/
-│   └── DAV_IEEE_Paper.pdf                 # Full technical paper
+│   └── DAV_IEEE_Paper.pdf                  # Full technical paper
 │
 ├── requirements.txt
 └── README.md
@@ -301,7 +315,7 @@ TrafficRisk-USA/
 
 ```bash
 # Clone the repository
-git clone https://github.com/zain31197/Crash-Pattern-Engine.git
+git clone https://github.com/zain31197/TrafficRisk-USA.git
 cd TrafficRisk-USA
 
 # Create virtual environment
@@ -336,7 +350,7 @@ jupyter>=1.0.0
 
 ```bash
 # Launch Jupyter
-jupyter notebook notebooks/US_Accidents_Case_Study.ipynb
+jupyter notebook notebooks/Traffic-Risk-USA-Pattern.ipynb
 ```
 
 ### Dataset Download
@@ -355,9 +369,9 @@ unzip us-accidents.zip -d data/
 ### Reproducing Individual Visualizations
 
 Each visualization section in the notebook is modular and independently executable. Cell tags follow the format:
-- `# VIZ_01` — Heatmap
-- `# VIZ_04` — K-Means clustering
-- `# VIZ_10` — Hierarchical clustering
+- `# VIZ_01` — Heatmap (Hour × Day)
+- `# VIZ_09` — K-Means clustering map
+- `# VIZ_10` — Hierarchical clustering dendrogram
 
 ---
 
@@ -408,12 +422,12 @@ Raw CSV (7.7M rows)
 
 ## 🔮 Future Work
 
-- [ ] **Real-Time Risk Scoring API** — Expose a REST endpoint that scores any lat/lng + time + weather combination against trained models
-- [ ] **Predictive Severity Model** — XGBoost/LightGBM model trained on engineered features
+- [ ] **Real-Time Risk Scoring API** — REST endpoint scoring any lat/lng + time + weather combination against trained models
+- [ ] **Predictive Severity Model** — XGBoost/LightGBM trained on all engineered features
 - [ ] **Street-Level Analysis** — OpenStreetMap integration for road-type segmentation
-- [ ] **Weather Forecast Integration** — Combine with NOAA forecast data for *prospective* risk windows
+- [ ] **Weather Forecast Integration** — NOAA forecast data for *prospective* risk window alerts
 - [ ] **Interactive Dashboard** — Streamlit or Dash app for public exploration
-- [ ] **Causal Inference** — Move beyond correlation to identify true causal drivers using DoWhy or CausalML
+- [ ] **Causal Inference** — Move beyond correlation using DoWhy or CausalML to identify true causal drivers
 
 ---
 
