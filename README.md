@@ -198,7 +198,7 @@ At midnight (Hour=0), weather groups cluster around 50–55°F. The large teal b
 
 ### 9. Critical Segment Identification — K-Means Clustering (K=15 Hotspots)
 
-![K-Means Clustering](10.png)
+![K-Means Clustering](9.png)
 
 K-Means with K=15 partitions the national accident geography into 15 representative clusters, each bubble sized by accident volume and colored by average severity. This reveals the critical distinction between **high-frequency** and **high-severity** zones:
 
@@ -210,7 +210,7 @@ K-Means with K=15 partitions the national accident geography into 15 representat
 
 ### 10. Hierarchical Clustering — State Similarity by Accident Profile
 
-![Hierarchical Clustering](9.png)
+![Hierarchical Clustering](10.png)
 
 Ward-linkage hierarchical clustering groups all 49 US states by their multidimensional accident profile similarity. The red dashed threshold line at dissimilarity ~3.5 produces 7 meaningful policy clusters:
 
