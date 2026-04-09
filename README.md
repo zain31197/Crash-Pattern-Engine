@@ -188,7 +188,7 @@ This chart definitively decouples the environmental narrative from the behaviora
 
 ### 8. Dynamic Environmental Risk — Hourly Weather & Severity
 
-![Dynamic Environmental Risk](11.png)
+![Dynamic Environmental Risk](8.png)
 
 An animated 4-dimensional bubble chart (shown here at Hour=0) encoding: **Average Temperature (x-axis) × Accident Volume (y-axis, log scale) × Visibility (bubble size) × Avg Severity (color)**.
 
@@ -228,7 +228,7 @@ This enables **policy grouping** — states within a cluster can share intervent
 
 ### 11. Temporal Ridgeline Analysis — Accident Hour Distribution by Weather
 
-![Temporal Ridgeline Analysis](8.png)
+![Temporal Ridgeline Analysis](11.png)
 
 Ridgeline (joy) plots stack KDE distributions for each weather type, enabling direct visual comparison of accident timing across conditions. The divergences are sharp and policy-relevant:
 
