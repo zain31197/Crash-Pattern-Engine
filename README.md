@@ -178,7 +178,7 @@ Notable patterns:
 
 ### 7. Hourly Environmental Trends vs. Accident Frequency
 
-![Hourly Environmental Trends](12.png)
+![Hourly Environmental Trends](7.png)
 
 Three metrics plotted on a shared log-scale y-axis across 24 hours, animated by day of week (shown here for Monday). The result is decisive: **Avg_Temperature (blue) and Avg_Visibility (pink) remain essentially flat across all hours**, while **Accident_Count (green) shows dramatic rush-hour spikes** peaking around 8–10 AM and again at 15–17h.
 
@@ -241,7 +241,7 @@ Ridgeline (joy) plots stack KDE distributions for each weather type, enabling di
 
 ### 12. Topographic Risk Map — 2D Contours of Accident Severity
 
-![Topographic Risk Map](7.png)
+![Topographic Risk Map](12.png)
 
 The most analytically sophisticated visualization in the suite. A 2D contour map plots **Temperature °F (x-axis) × Visibility in miles (y-axis) → Average Severity (color/z-axis)**. The non-linear, island-like contour shapes definitively disprove any simple linear relationship between environmental variables and severity.
 
