@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚦 TrafficRisk-USA
+# 🚦 TrafficRisk USA
 ### *Spatiotemporal & Environmental Intelligence for Road Safety*
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat-square&logo=python)](https://python.org)
