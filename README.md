@@ -26,7 +26,7 @@ Road accident analysis has historically been reactive — emergency responders a
 - **Geography** (urban density, highway type, regional infrastructure)
 - **Infrastructure** (signals, junctions, crossings)
 
-Despite this, most public safety dashboards treat accidents as isolated data points. This project builds a **multi-dimensional risk intelligence system** — transforming 7.7 million raw accident records into actionable, spatiotemporal risk patterns that can inform proactive intervention.
+Despite this, most public safety dashboards treat accidents as isolated data points. This project builds a **multi-dimensional risk intelligence system** transforming 7.7 million raw accident records into actionable, spatiotemporal risk patterns that can inform proactive intervention.
 
 **The question this project answers:**
 > *"Given time, location, weather, and infrastructure conditions — what is the risk profile of any given road segment in the US?"*
